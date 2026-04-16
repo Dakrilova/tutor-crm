@@ -9,6 +9,14 @@
 * 🟢 You can import this file directly.
 */
 
+export const UserRole = {
+  TEACHER: 'TEACHER',
+  ADMIN: 'ADMIN'
+} as const
+
+export type UserRole = (typeof UserRole)[keyof typeof UserRole]
+
+
 export const LessonStatus = {
   FREE: 'FREE',
   RESERVED: 'RESERVED',

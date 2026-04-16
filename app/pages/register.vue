@@ -35,7 +35,7 @@ async function submitRegister() {
 </script>
 
 <template>
-  <div class="page-container max-w-xl">
+  <div class="page-container" style="max-width: 720px;">
     <div class="panel p-6">
       <h1 class="text-3xl font-bold mb-2">Регистрация</h1>
       <p class="muted mb-6">Создай аккаунт преподавателя</p>
@@ -79,15 +79,18 @@ async function submitRegister() {
           {{ successMessage }}
         </p>
 
-        <div class="flex gap-3 pt-2">
-          <UButton :loading="loading" @click="submitRegister">
-            Зарегистрироваться
-          </UButton>
+        <div class="flex flex-wrap gap-3 pt-2">
+          <button
+            class="btn-primary"
+            type="button"
+            :disabled="loading"
+            @click="submitRegister"
+          >
+            {{ loading ? "Регистрируем..." : "Зарегистрироваться" }}
+          </button>
 
-          <NuxtLink to="/login">
-            <UButton variant="outline">
-              Уже есть аккаунт
-            </UButton>
+          <NuxtLink to="/login" class="btn-secondary">
+            Уже есть аккаунт
           </NuxtLink>
         </div>
       </div>

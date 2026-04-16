@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import AppHeader from "~/components/AppHeader.vue"
+import CreateEntryModal from "~/components/forms/CreateEntryModal.vue"
+
 definePageMeta({
   middleware: "auth"
 })
@@ -6,40 +9,46 @@ definePageMeta({
 const auth = useAuthStore()
 const coursesStore = useCoursesStore()
 
+const teacherSubtitle = computed(() => {
+  return `Преподаватель: <strong>${auth.user?.fullName || "—"}</strong>`
+})
+
+const isCreateModalOpen = ref(false)
+
 await callOnce("courses-page", async () => {
   await coursesStore.fetchCourses()
 })
 </script>
 
 <template>
+  <AppHeader
+    title="Курсы"
+    :subtitle="teacherSubtitle"
+  >
+    <template #actions>
+      <button
+        class="btn-primary"
+        type="button"
+        @click="isCreateModalOpen = true"
+      >
+        + Создать курс
+      </button>
+
+      <NuxtLink to="/board" class="btn-secondary">
+        К доске
+      </NuxtLink>
+
+      <NuxtLink to="/profile" class="btn-secondary">
+        Профиль
+      </NuxtLink>
+
+      <button class="btn-secondary" type="button" @click="auth.logout">
+        Выйти
+      </button>
+    </template>
+  </AppHeader>
+
   <div class="page-container">
-    <div class="flex items-center justify-between gap-4 mb-6">
-      <div>
-        <h1 class="text-3xl font-bold mb-2">Курсы</h1>
-        <p class="muted">
-          Преподаватель: {{ auth.user?.fullName }}
-        </p>
-      </div>
-
-      <div class="flex flex-wrap gap-3">
-        <NuxtLink to="/board">
-          <UButton variant="outline">
-            К доске
-          </UButton>
-        </NuxtLink>
-
-        <NuxtLink to="/profile">
-          <UButton variant="outline">
-            Профиль
-          </UButton>
-        </NuxtLink>
-
-        <UButton variant="outline" @click="auth.logout">
-          Выйти
-        </UButton>
-      </div>
-    </div>
-
     <div v-if="coursesStore.loading" class="panel p-6">
       Загружаем курсы...
     </div>
@@ -65,9 +74,9 @@ await callOnce("courses-page", async () => {
             </p>
           </div>
 
-          <UBadge variant="soft">
+          <div class="lesson-type-badge">
             {{ course.lessons?.length || 0 }} уроков
-          </UBadge>
+          </div>
         </div>
 
         <div class="card-ui p-4">
@@ -85,14 +94,17 @@ await callOnce("courses-page", async () => {
           </p>
         </div>
 
-                <div class="mt-4">
-        <NuxtLink :to="`/courses/${course.id}`">
-            <UButton variant="outline" size="sm">
+        <div class="mt-4">
+          <NuxtLink :to="`/courses/${course.id}`" class="btn-secondary">
             Открыть курс
-            </UButton>
-        </NuxtLink>
+          </NuxtLink>
         </div>
       </div>
     </div>
+
+    <CreateEntryModal
+      v-model:open="isCreateModalOpen"
+      initial-mode="course"
+    />
   </div>
 </template>

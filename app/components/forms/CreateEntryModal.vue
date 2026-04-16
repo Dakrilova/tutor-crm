@@ -1,10 +1,16 @@
 <script setup lang="ts">
+const props = withDefaults(defineProps<{
+  initialMode?: "single" | "course" | "course-lesson"
+}>(), {
+  initialMode: "single"
+})
+
 const open = defineModel<boolean>("open", { default: false })
 
 const lessonsStore = useLessonsStore()
 const coursesStore = useCoursesStore()
 
-const mode = ref<"single" | "course" | "course-lesson">("single")
+const mode = ref<"single" | "course" | "course-lesson">(props.initialMode)
 
 const singleForm = reactive({
   title: "",
@@ -37,7 +43,7 @@ const loading = ref(false)
 const errorMessage = ref("")
 
 function resetAll() {
-  mode.value = "single"
+  mode.value = props.initialMode
 
   singleForm.title = ""
   singleForm.targetName = ""
@@ -87,6 +93,7 @@ function isEndTimeLater(startTime: string, endTime: string) {
 
 watch(open, async (value) => {
   if (value) {
+    mode.value = props.initialMode
     await coursesStore.fetchCourses()
   } else {
     resetAll()
@@ -213,9 +220,9 @@ async function submit() {
             <p class="muted text-sm">Одиночное занятие, курс или урок курса</p>
           </div>
 
-          <UButton variant="ghost" @click="open = false">
+          <button class="btn-secondary" type="button" @click="open = false">
             Закрыть
-          </UButton>
+          </button>
         </div>
 
         <div class="field-group mb-6">
@@ -240,18 +247,36 @@ async function submit() {
 
           <div class="field-group">
             <label class="field-label">Дата</label>
-            <input v-model="singleForm.lessonDate" type="date" class="field-input" :min="minDateValue" :max="maxDateValue">
+            <input
+              v-model="singleForm.lessonDate"
+              type="date"
+              class="field-input"
+              :min="minDateValue"
+              :max="maxDateValue"
+            >
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="field-group">
               <label class="field-label">Начало</label>
-              <input v-model="singleForm.startTime" type="time" class="field-input" min="08:00" max="22:00">
+              <input
+                v-model="singleForm.startTime"
+                type="time"
+                class="field-input"
+                min="08:00"
+                max="22:00"
+              >
             </div>
 
             <div class="field-group">
               <label class="field-label">Конец</label>
-              <input v-model="singleForm.endTime" type="time" class="field-input" min="08:00" max="22:00">
+              <input
+                v-model="singleForm.endTime"
+                type="time"
+                class="field-input"
+                min="08:00"
+                max="22:00"
+              >
             </div>
           </div>
 
@@ -268,7 +293,12 @@ async function submit() {
 
           <div class="field-group">
             <label class="field-label">Ссылка</label>
-            <input v-model="singleForm.linkUrl" type="text" class="field-input" placeholder="https://...">
+            <input
+              v-model="singleForm.linkUrl"
+              type="text"
+              class="field-input"
+              placeholder="https://..."
+            >
           </div>
         </div>
 
@@ -306,18 +336,36 @@ async function submit() {
 
           <div class="field-group">
             <label class="field-label">Дата</label>
-            <input v-model="courseLessonForm.lessonDate" type="date" class="field-input" :min="minDateValue" :max="maxDateValue">
+            <input
+              v-model="courseLessonForm.lessonDate"
+              type="date"
+              class="field-input"
+              :min="minDateValue"
+              :max="maxDateValue"
+            >
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="field-group">
               <label class="field-label">Начало</label>
-              <input v-model="courseLessonForm.startTime" type="time" class="field-input" min="08:00" max="22:00">
+              <input
+                v-model="courseLessonForm.startTime"
+                type="time"
+                class="field-input"
+                min="08:00"
+                max="22:00"
+              >
             </div>
 
             <div class="field-group">
               <label class="field-label">Конец</label>
-              <input v-model="courseLessonForm.endTime" type="time" class="field-input" min="08:00" max="22:00">
+              <input
+                v-model="courseLessonForm.endTime"
+                type="time"
+                class="field-input"
+                min="08:00"
+                max="22:00"
+              >
             </div>
           </div>
 
@@ -334,7 +382,12 @@ async function submit() {
 
           <div class="field-group">
             <label class="field-label">Ссылка</label>
-            <input v-model="courseLessonForm.linkUrl" type="text" class="field-input" placeholder="https://...">
+            <input
+              v-model="courseLessonForm.linkUrl"
+              type="text"
+              class="field-input"
+              placeholder="https://..."
+            >
           </div>
         </div>
 
@@ -343,12 +396,18 @@ async function submit() {
         </p>
 
         <div class="flex justify-end gap-3 pt-5">
-          <UButton variant="outline" @click="open = false">
+          <button class="btn-secondary" type="button" @click="open = false">
             Отмена
-          </UButton>
-          <UButton :loading="loading" @click="submit">
-            Создать
-          </UButton>
+          </button>
+
+          <button
+            class="btn-primary"
+            type="button"
+            :disabled="loading"
+            @click="submit"
+          >
+            {{ loading ? "Создаем..." : "Создать" }}
+          </button>
         </div>
       </div>
     </template>

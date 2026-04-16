@@ -68,26 +68,26 @@ function handleClick() {
 
 <template>
   <div
-    class="card-ui p-4 cursor-pointer hover:scale-[1.01] transition min-w-0 min-h-[220px] flex flex-col"
+    class="lesson-card card-ui cursor-pointer min-w-0 flex flex-col"
     draggable="true"
     @click="handleClick"
     @dragstart="onDragStart"
   >
-    <div class="flex items-start justify-between gap-3 mb-2 min-w-0">
+    <div class="lesson-card-head">
       <h3
-        class="font-semibold leading-5 min-w-0 line-clamp-2 text-safe-wrap"
+        class="lesson-card-title text-safe-wrap"
         :title="lesson.title"
       >
         {{ lesson.title }}
       </h3>
 
-      <UBadge variant="soft" class="shrink-0">
+      <span class="lesson-type-badge">
         {{ lesson.courseId ? "Курс" : "Одно" }}
-      </UBadge>
+      </span>
     </div>
 
     <p
-      class="muted text-sm mb-2 min-w-0 line-clamp-2 text-safe-wrap min-h-[40px]"
+      class="lesson-card-target muted text-safe-wrap"
       :title="getTargetLabel(lesson)"
     >
       {{ getTargetLabel(lesson) }}
@@ -95,19 +95,19 @@ function handleClick() {
 
     <p
       v-if="lesson.course?.title"
-      class="text-xs muted mb-3 min-w-0 line-clamp-1 text-safe-wrap"
+      class="lesson-card-course muted text-safe-wrap"
       :title="lesson.course.title"
     >
       Курс: {{ lesson.course.title }}
     </p>
 
-    <div class="space-y-1 text-sm mb-3 min-w-0">
+    <div class="lesson-card-time">
       <div class="text-safe-wrap">{{ formatDate(lesson.startAt) }}</div>
       <div class="muted text-safe-wrap">{{ formatDate(lesson.endAt) }}</div>
     </div>
 
-    <div class="mt-auto flex items-center justify-between gap-3 min-w-0">
-      <span class="text-sm min-w-0 line-clamp-1 text-safe-wrap">
+    <div class="lesson-card-footer">
+      <span class="lesson-card-payment text-safe-wrap">
         {{ lesson.isPaid ? "Оплачено" : "Не оплачено" }}
       </span>
 
@@ -115,7 +115,7 @@ function handleClick() {
         v-if="lesson.linkUrl"
         :href="lesson.linkUrl"
         target="_blank"
-        class="accent text-sm shrink-0"
+        class="lesson-card-link"
         @click.stop
       >
         Ссылка

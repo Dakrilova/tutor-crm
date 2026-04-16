@@ -1,14 +1,14 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
 
-  modules: ['@pinia/nuxt', '@nuxt/ui'],
+  modules: ["@pinia/nuxt", "@nuxt/ui"],
 
-  css: ['~/assets/css/main.css'],
+  css: ["~/assets/css/main.css"],
 
   runtimeConfig: {
-    jwtSecret: process.env.JWT_SECRET || 'dev-secret',
+    jwtSecret: process.env.JWT_SECRET || "dev-secret",
     public: {}
   },
 
-  compatibilityDate: '2025-01-01'
-})
+  compatibilityDate: "2025-01-01"
+});

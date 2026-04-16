@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import AppHeader from "~/components/AppHeader.vue"
 import AddCourseLessonModal from "../../components/forms/AddCourseLessonModal.vue"
 import EditLessonModal from "../../components/forms/EditLessonModal.vue"
 import EditCourseModal from "../../components/forms/EditCourseModal.vue"
@@ -22,6 +23,10 @@ const isEditLessonModalOpen = ref(false)
 const isEditCourseModalOpen = ref(false)
 const selectedLesson = ref<any | null>(null)
 
+const teacherSubtitle = computed(() => {
+  return `Преподаватель: <strong>${auth.user?.fullName || "—"}</strong>`
+})
+
 function formatDate(value: string) {
   const date = new Date(value)
 
@@ -36,6 +41,23 @@ function formatDate(value: string) {
     hour: "2-digit",
     minute: "2-digit"
   }).format(date)
+}
+
+function getStatusLabel(status: string) {
+  switch (status) {
+    case "FREE":
+      return "Свободно"
+    case "RESERVED":
+      return "Забронировано"
+    case "PAID":
+      return "Оплачено"
+    case "IN_PROGRESS":
+      return "В работе"
+    case "DONE":
+      return "Завершено"
+    default:
+      return status
+  }
 }
 
 async function fetchCourse() {
@@ -120,40 +142,38 @@ onMounted(() => {
 </script>
 
 <template>
+  <AppHeader
+    :title="course?.title || 'Курс'"
+    :subtitle="teacherSubtitle"
+  >
+    <template #actions>
+      <button
+        class="btn-primary"
+        type="button"
+        @click="isAddLessonModalOpen = true"
+      >
+        + Добавить урок
+      </button>
+
+      <button
+        class="btn-secondary"
+        type="button"
+        @click="isEditCourseModalOpen = true"
+      >
+        Редактировать курс
+      </button>
+
+      <NuxtLink to="/courses" class="btn-secondary">
+        К списку курсов
+      </NuxtLink>
+
+      <NuxtLink to="/board" class="btn-secondary">
+        К доске
+      </NuxtLink>
+    </template>
+  </AppHeader>
+
   <div class="page-container">
-    <div class="flex items-center justify-between gap-4 mb-6">
-      <div>
-        <h1 class="text-3xl font-bold mb-2">
-          {{ course?.title || "Курс" }}
-        </h1>
-        <p class="muted">
-          Преподаватель: {{ auth.user?.fullName }}
-        </p>
-      </div>
-
-      <div class="flex flex-wrap gap-3">
-        <UButton @click="isAddLessonModalOpen = true">
-          + Добавить урок
-        </UButton>
-
-        <UButton variant="outline" @click="isEditCourseModalOpen = true">
-          Редактировать курс
-        </UButton>
-
-        <NuxtLink to="/courses">
-          <UButton variant="outline">
-            К списку курсов
-          </UButton>
-        </NuxtLink>
-
-        <NuxtLink to="/board">
-          <UButton variant="outline">
-            К доске
-          </UButton>
-        </NuxtLink>
-      </div>
-    </div>
-
     <div v-if="loading" class="panel p-6">
       Загружаем курс...
     </div>
@@ -164,7 +184,7 @@ onMounted(() => {
 
     <template v-else-if="course">
       <div class="panel p-5 mb-6">
-        <div class="flex items-start justify-between gap-4">
+        <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
           <div>
             <p class="text-sm muted mb-1">Название курса</p>
             <p class="text-xl font-semibold mb-3">{{ course.title }}</p>
@@ -173,19 +193,19 @@ onMounted(() => {
             <p>{{ course.targetName || "Не указано" }}</p>
           </div>
 
-          <div class="flex flex-col items-end gap-3">
-            <UBadge variant="soft">
+          <div class="flex flex-col items-start lg:items-end gap-3">
+            <div class="lesson-type-badge">
               {{ course.lessons?.length || 0 }} уроков
-            </UBadge>
+            </div>
 
-            <UButton
-              color="error"
-              variant="outline"
-              :loading="deleting"
-              @click="removeCourse"
-            >
-              Удалить курс
-            </UButton>
+            <button
+  class="btn-danger"
+  type="button"
+  :disabled="deleting"
+  @click="removeCourse"
+>
+  {{ deleting ? "Удаляем..." : "Удалить курс" }}
+</button>
           </div>
         </div>
       </div>
@@ -194,28 +214,33 @@ onMounted(() => {
         <p class="muted">В этом курсе пока нет уроков</p>
       </div>
 
-      <div v-else class="space-y-4">
+      <div v-else class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div
           v-for="lesson in course.lessons"
           :key="lesson.id"
-          class="card-ui p-4 cursor-pointer hover:scale-[1.01] transition"
+          class="lesson-card card-ui cursor-pointer"
           @click="openEditLesson(lesson)"
         >
-          <div class="flex items-start justify-between gap-3 mb-2">
-            <h2 class="font-semibold">{{ lesson.title }}</h2>
+          <div class="lesson-card-head">
+            <h2 class="lesson-card-title text-safe-wrap">
+              {{ lesson.title }}
+            </h2>
 
-            <UBadge variant="soft">
-              {{ lesson.status }}
-            </UBadge>
+            <span class="lesson-type-badge">
+              {{ getStatusLabel(lesson.status) }}
+            </span>
           </div>
 
-          <p class="muted text-sm mb-2">
-            {{ formatDate(lesson.startAt) }} — {{ formatDate(lesson.endAt) }}
-          </p>
+          <div class="lesson-card-time">
+            <div class="text-safe-wrap">{{ formatDate(lesson.startAt) }}</div>
+            <div class="muted text-safe-wrap">{{ formatDate(lesson.endAt) }}</div>
+          </div>
 
-          <p class="text-sm">
-            {{ lesson.isPaid ? "Оплачено" : "Не оплачено" }}
-          </p>
+          <div class="lesson-card-footer">
+            <span class="lesson-card-payment text-safe-wrap">
+              {{ lesson.isPaid ? "Оплачено" : "Не оплачено" }}
+            </span>
+          </div>
         </div>
       </div>
     </template>

@@ -39,11 +39,12 @@ export default defineEventHandler(async (event) => {
 
   return {
     ok: true,
-    debugUserId: user.id,
     user: {
       id: user.id,
       fullName: user.fullName,
-      email: user.email
+      email: user.email,
+      contacts: user.contacts,
+      role: user.role
     }
   };
 });

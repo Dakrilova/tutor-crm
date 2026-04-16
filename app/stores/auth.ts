@@ -1,62 +1,66 @@
 export const useAuthStore = defineStore("auth", () => {
   const user = ref<null | {
-    id: number
-    fullName: string
-    email: string
-    contacts?: string | null
-  }>(null)
+    id: number;
+    fullName: string;
+    email: string;
+    contacts?: string | null;
+    role: "TEACHER" | "ADMIN";
+  }>(null);
 
-  const authenticated = computed(() => !!user.value)
-  const loading = ref(false)
+  const authenticated = computed(() => !!user.value);
+  const isAdmin = computed(() => user.value?.role === "ADMIN");
+  const loading = ref(false);
 
   async function fetchMe() {
-    loading.value = true
+    loading.value = true;
 
     try {
       const headers = process.server
         ? useRequestHeaders(["cookie"])
-        : undefined
+        : undefined;
 
       const response = await $fetch("/api/auth/me", {
         headers
-      })
+      });
 
       if (response.authenticated) {
-        user.value = response.user
+        user.value = response.user;
       } else {
-        user.value = null
+        user.value = null;
       }
     } catch {
-      user.value = null
+      user.value = null;
     } finally {
-      loading.value = false
+      loading.value = false;
     }
   }
 
   async function logout() {
     await $fetch("/api/auth/logout", {
       method: "POST"
-    })
+    });
 
-    user.value = null
-    await navigateTo("/login")
+    user.value = null;
+    await navigateTo("/login");
   }
 
   function setUser(newUser: {
-    id: number
-    fullName: string
-    email: string
-    contacts?: string | null
+    id: number;
+    fullName: string;
+    email: string;
+    contacts?: string | null;
+    role: "TEACHER" | "ADMIN";
   } | null) {
-    user.value = newUser
+    user.value = newUser;
   }
 
   return {
     user,
     authenticated,
+    isAdmin,
     loading,
     fetchMe,
     logout,
     setUser
-  }
-})
+  };
+});

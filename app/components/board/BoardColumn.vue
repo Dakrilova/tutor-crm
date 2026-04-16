@@ -52,19 +52,19 @@ function handleEdit(lesson: any) {
 </script>
 
 <template>
-  <div
-    class="panel p-4 min-h-[500px] transition"
-    :class="{ 'ring-2 ring-white/20': isDragOver }"
+  <section
+    class="board-column panel"
+    :class="{ 'board-column--drag-over': isDragOver }"
     @dragover="onDragOver"
     @dragleave="onDragLeave"
     @drop="onDrop"
   >
-    <div class="flex items-center justify-between mb-4">
-      <h2 class="text-lg font-semibold">{{ title }}</h2>
-      <span class="muted text-sm">{{ items.length }}</span>
-    </div>
+    <header class="board-column-header">
+      <h2 class="board-column-title">{{ title }}</h2>
+      <span class="board-column-count">{{ items.length }}</span>
+    </header>
 
-    <div class="space-y-3">
+    <div class="board-column-body">
       <LessonCard
         v-for="item in items"
         :key="item.id"
@@ -74,10 +74,10 @@ function handleEdit(lesson: any) {
 
       <div
         v-if="items.length === 0"
-        class="card-ui p-4 text-sm muted"
+        class="board-column-empty card-ui"
       >
         Занятий нет
       </div>
     </div>
-  </div>
+  </section>
 </template>

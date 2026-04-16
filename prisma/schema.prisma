@@ -7,6 +7,11 @@ datasource db {
   provider = "sqlite"
 }
 
+enum UserRole {
+  TEACHER
+  ADMIN
+}
+
 enum LessonStatus {
   FREE
   RESERVED
@@ -21,6 +26,7 @@ model User {
   email        String   @unique
   passwordHash String
   contacts     String?
+  role         UserRole @default(TEACHER)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 

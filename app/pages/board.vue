@@ -2,6 +2,7 @@
 import BoardColumn from "../components/board/BoardColumn.vue"
 import CreateEntryModal from "../components/forms/CreateEntryModal.vue"
 import EditLessonModal from "../components/forms/EditLessonModal.vue"
+import AppHeader from "../components/AppHeader.vue"
 
 definePageMeta({
   middleware: "auth"
@@ -27,6 +28,10 @@ const filters = reactive({
   date: "",
   search: "",
   kind: "all" as "all" | "single" | "course"
+})
+
+const teacherSubtitle = computed(() => {
+  return `Преподаватель: <strong>${auth.user?.fullName || "—"}</strong>`
 })
 
 function openEditLesson(lesson: any) {
@@ -88,38 +93,30 @@ await callOnce("lessons-board", async () => {
 </script>
 
 <template>
+  <AppHeader
+    title="Доска занятий"
+    :subtitle="teacherSubtitle"
+  >
+    <template #actions>
+      <button class="btn-primary" type="button" @click="isCreateModalOpen = true">
+        + Создать
+      </button>
+
+      <NuxtLink to="/courses" class="btn-secondary">
+        Курсы
+      </NuxtLink>
+
+      <NuxtLink to="/profile" class="btn-secondary">
+        Профиль
+      </NuxtLink>
+
+      <button class="btn-secondary" type="button" @click="auth.logout">
+        Выйти
+      </button>
+    </template>
+  </AppHeader>
+
   <div class="page-container">
-    <div class="flex items-center justify-between gap-4 mb-6">
-      <div>
-        <h1 class="text-3xl font-bold mb-2">Доска занятий</h1>
-        <p class="muted">
-          Преподаватель: {{ auth.user?.fullName }}
-        </p>
-      </div>
-
-      <div class="flex flex-wrap gap-3">
-        <UButton @click="isCreateModalOpen = true">
-          + Создать
-        </UButton>
-
-        <NuxtLink to="/courses">
-          <UButton variant="outline">
-            Курсы
-          </UButton>
-        </NuxtLink>
-
-        <NuxtLink to="/profile">
-          <UButton variant="outline">
-            Профиль
-          </UButton>
-        </NuxtLink>
-
-        <UButton variant="outline" @click="auth.logout">
-          Выйти
-        </UButton>
-      </div>
-    </div>
-
     <div class="panel p-4 mb-6">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div class="field-group">
@@ -151,9 +148,9 @@ await callOnce("lessons-board", async () => {
         </div>
 
         <div class="flex items-end">
-          <UButton variant="outline" @click="clearFilters">
+          <button class="btn-secondary" type="button" @click="clearFilters">
             Сбросить
-          </UButton>
+          </button>
         </div>
       </div>
     </div>

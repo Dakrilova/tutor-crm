@@ -14,6 +14,10 @@ const loading = ref(false)
 const errorMessage = ref("")
 const successMessage = ref("")
 
+const teacherSubtitle = computed(() => {
+  return `Преподаватель: <strong>${auth.user?.fullName || "—"}</strong>`
+})
+
 watch(
   () => auth.user,
   (user) => {
@@ -51,19 +55,32 @@ async function saveProfile() {
 </script>
 
 <template>
-  <div class="page-container max-w-3xl">
-    <div class="panel p-6">
-      <div class="flex items-center justify-between gap-4 mb-6">
-        <div>
-          <h1 class="text-3xl font-bold mb-2">Профиль преподавателя</h1>
-          <p class="muted">
-            Управление личными данными аккаунта
-          </p>
-        </div>
+  <AppHeader
+    title="Профиль"
+    :subtitle="teacherSubtitle"
+  >
+    <template #actions>
+      <NuxtLink to="/board" class="btn-secondary">
+        К доске
+      </NuxtLink>
 
-        <UButton variant="outline" @click="auth.logout">
-          Выйти
-        </UButton>
+      <NuxtLink to="/courses" class="btn-secondary">
+        Курсы
+      </NuxtLink>
+
+      <button class="btn-secondary" type="button" @click="auth.logout">
+        Выйти
+      </button>
+    </template>
+  </AppHeader>
+
+  <div class="page-container" style="max-width: 980px;">
+    <div class="panel p-6">
+      <div class="mb-6">
+        <h1 class="text-3xl font-bold mb-2">Профиль преподавателя</h1>
+        <p class="muted">
+          Управление личными данными аккаунта
+        </p>
       </div>
 
       <div class="card-ui p-5 space-y-5">
@@ -105,15 +122,18 @@ async function saveProfile() {
           {{ successMessage }}
         </p>
 
-        <div class="flex gap-3 pt-2">
-          <UButton :loading="loading" @click="saveProfile">
-            Сохранить
-          </UButton>
+        <div class="flex flex-wrap gap-3 pt-2">
+          <button
+            class="btn-primary"
+            type="button"
+            :disabled="loading"
+            @click="saveProfile"
+          >
+            {{ loading ? "Сохраняем..." : "Сохранить" }}
+          </button>
 
-          <NuxtLink to="/board">
-            <UButton variant="outline">
-              К доске
-            </UButton>
+          <NuxtLink to="/board" class="btn-secondary">
+            К доске
           </NuxtLink>
         </div>
       </div>
