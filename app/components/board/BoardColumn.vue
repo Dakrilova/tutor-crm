@@ -13,6 +13,11 @@ const emit = defineEmits<{
 }>()
 
 const isDragOver = ref(false)
+const isCollapsed = ref(false)
+
+function toggleCollapse() {
+  isCollapsed.value = !isCollapsed.value
+}
 
 function onDragOver(event: DragEvent) {
   event.preventDefault()
@@ -54,17 +59,34 @@ function handleEdit(lesson: any) {
 <template>
   <section
     class="board-column panel"
-    :class="{ 'board-column--drag-over': isDragOver }"
+    :class="{
+      'board-column--drag-over': isDragOver,
+      'board-column--collapsed': isCollapsed
+    }"
     @dragover="onDragOver"
     @dragleave="onDragLeave"
     @drop="onDrop"
   >
     <header class="board-column-header">
-      <h2 class="board-column-title">{{ title }}</h2>
-      <span class="board-column-count">{{ items.length }}</span>
+      <div class="board-column-title-wrap">
+        <h2 class="board-column-title">{{ title }}</h2>
+        <span class="board-column-count">{{ items.length }}</span>
+      </div>
+
+      <button
+        class="board-column-toggle"
+        type="button"
+        :aria-label="isCollapsed ? 'Развернуть столбец' : 'Свернуть столбец'"
+        @click="toggleCollapse"
+      >
+        {{ isCollapsed ? "▼" : "▲" }}
+      </button>
     </header>
 
-    <div class="board-column-body">
+    <div
+      v-show="!isCollapsed"
+      class="board-column-body"
+    >
       <LessonCard
         v-for="item in items"
         :key="item.id"

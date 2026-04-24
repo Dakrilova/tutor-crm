@@ -149,20 +149,14 @@ async function removeLesson() {
   <UModal
     v-model:open="open"
     title="Редактировать занятие"
-    description="Изменение существующего занятия"
+    description="Изменение существующей записи"
     :ui="{ content: 'bg-transparent shadow-none ring-0 overflow-visible' }"
   >
     <template #content>
-      <div class="panel p-6 rounded-2xl overflow-hidden">
-        <div class="flex items-center justify-between gap-4 mb-6">
-          <div>
-            <h2 class="text-2xl font-semibold mb-1">Редактировать занятие</h2>
-            <p class="muted text-sm">Изменения существующей записи</p>
-          </div>
-
-          <UButton variant="ghost" @click="open = false">
-            Закрыть
-          </UButton>
+      <div class="panel p-6 rounded-2xl modal-panel-scroll">
+        <div class="mb-6">
+          <h2 class="text-2xl font-semibold mb-1">Редактировать занятие</h2>
+          <p class="muted text-sm">Изменения существующей записи</p>
         </div>
 
         <div class="space-y-4">
@@ -184,12 +178,24 @@ async function removeLesson() {
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="field-group">
               <label class="field-label">Начало</label>
-              <input v-model="form.startTime" type="time" class="field-input" min="08:00" max="22:00">
+              <input
+                v-model="form.startTime"
+                type="time"
+                class="field-input"
+                min="08:00"
+                max="22:00"
+              >
             </div>
 
             <div class="field-group">
               <label class="field-label">Конец</label>
-              <input v-model="form.endTime" type="time" class="field-input" min="08:00" max="22:00">
+              <input
+                v-model="form.endTime"
+                type="time"
+                class="field-input"
+                min="08:00"
+                max="22:00"
+              >
             </div>
           </div>
 
@@ -206,7 +212,12 @@ async function removeLesson() {
 
           <div class="field-group">
             <label class="field-label">Ссылка</label>
-            <input v-model="form.linkUrl" type="text" class="field-input" placeholder="https://...">
+            <input
+              v-model="form.linkUrl"
+              type="text"
+              class="field-input"
+              placeholder="https://..."
+            >
           </div>
 
           <p v-if="errorMessage" class="text-sm text-red-400">
@@ -214,22 +225,28 @@ async function removeLesson() {
           </p>
 
           <div class="flex justify-between gap-3 pt-3">
-            <UButton
-              color="error"
-              variant="outline"
-              :loading="deleting"
+            <button
+              class="btn-danger"
+              type="button"
+              :disabled="deleting"
               @click="removeLesson"
             >
-              Удалить
-            </UButton>
+              {{ deleting ? "Удаляем..." : "Удалить" }}
+            </button>
 
             <div class="flex gap-3">
-              <UButton variant="outline" @click="open = false">
+              <button class="btn-secondary" type="button" @click="open = false">
                 Отмена
-              </UButton>
-              <UButton :loading="loading" @click="submit">
-                Сохранить
-              </UButton>
+              </button>
+
+              <button
+                class="btn-primary"
+                type="button"
+                :disabled="loading"
+                @click="submit"
+              >
+                {{ loading ? "Сохраняем..." : "Сохранить" }}
+              </button>
             </div>
           </div>
         </div>

@@ -122,19 +122,17 @@ function openMaterialsModal() {
       <div class="muted text-safe-wrap">{{ formatDate(lesson.endAt) }}</div>
     </div>
 
-    <div class="lesson-card-footer">
-      <span class="lesson-card-payment text-safe-wrap">
-        {{ lesson.isPaid ? "Оплачено" : "Не оплачено" }}
-      </span>
-
+    <div
+      v-if="lesson.linkUrl"
+      class="lesson-card-footer"
+    >
       <a
-        v-if="lesson.linkUrl"
         :href="lesson.linkUrl"
         target="_blank"
         class="lesson-card-link"
         @click.stop
       >
-        Ссылка
+        Ссылка на занятие
       </a>
     </div>
 

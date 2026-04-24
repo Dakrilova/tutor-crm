@@ -231,7 +231,7 @@ async function submit() {
     :ui="{ content: 'bg-transparent shadow-none ring-0 overflow-visible' }"
   >
     <template #content>
-      <div class="panel p-6 rounded-2xl overflow-hidden">
+      <div class="panel p-6 rounded-2xl modal-panel-scroll">
         <div class="mb-6">
           <h2 class="text-2xl font-semibold mb-1">Создать запись</h2>
           <p class="muted text-sm">Одиночное занятие, курс или урок курса</p>
@@ -312,11 +312,6 @@ async function submit() {
               placeholder="https://..."
             >
           </div>
-
-          <label class="flex items-center gap-3 cursor-pointer">
-            <input v-model="singleForm.isPaid" type="checkbox">
-            <span>Отмечено как оплаченное</span>
-          </label>
         </div>
 
         <div v-else-if="mode === 'course'" class="space-y-4">
@@ -407,10 +402,6 @@ async function submit() {
             >
           </div>
 
-          <label class="flex items-center gap-3 cursor-pointer">
-            <input v-model="courseLessonForm.isPaid" type="checkbox">
-            <span>Отмечено как оплаченное</span>
-          </label>
         </div>
 
         <p v-if="errorMessage" class="text-sm text-red-400 mt-4">

@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import AppHeader from "../components/AppHeader.vue"
 import BoardColumn from "../components/board/BoardColumn.vue"
+import NotificationsModal from "../components/board/NotificationsModal.vue"
+import ScheduleOverview from "../components/board/ScheduleOverview.vue"
 import CreateEntryModal from "../components/forms/CreateEntryModal.vue"
 import EditLessonModal from "../components/forms/EditLessonModal.vue"
-import AppHeader from "../components/AppHeader.vue"
 
 definePageMeta({
   middleware: "auth"
@@ -21,6 +23,9 @@ const columns = [
 
 const isCreateModalOpen = ref(false)
 const isEditModalOpen = ref(false)
+const isScheduleModalOpen = ref(false)
+const isNotificationsModalOpen = ref(false)
+
 const selectedLesson = ref<any | null>(null)
 const movingLessonId = ref<number | null>(null)
 
@@ -34,6 +39,93 @@ const teacherSubtitle = computed(() => {
   return `Преподаватель: <strong>${auth.user?.fullName || "—"}</strong>`
 })
 
+function isPastLesson(lesson: any) {
+  const endDate = new Date(lesson.endAt)
+
+  if (Number.isNaN(endDate.getTime())) {
+    return false
+  }
+
+  return endDate < new Date()
+}
+
+const filteredLessons = computed(() => {
+  return lessonsStore.getFilteredItems(filters)
+})
+
+const boardLessons = computed(() => {
+  return filteredLessons.value.filter(lesson => !isPastLesson(lesson))
+})
+
+const lessonsByStatus = computed(() => {
+  return {
+    FREE: boardLessons.value.filter(item => item.status === "FREE"),
+    RESERVED: boardLessons.value.filter(item => item.status === "RESERVED"),
+    PAID: boardLessons.value.filter(item => item.status === "PAID"),
+    IN_PROGRESS: boardLessons.value.filter(item => item.status === "IN_PROGRESS"),
+    DONE: boardLessons.value.filter(item => item.status === "DONE")
+  }
+})
+
+const notificationsCount = computed(() => {
+  const now = new Date()
+
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  const tomorrow = new Date(today)
+  tomorrow.setDate(today.getDate() + 1)
+
+  function toDateKey(date: Date) {
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, "0")
+    const day = String(date.getDate()).padStart(2, "0")
+    return `${year}-${month}-${day}`
+  }
+
+  const todayKey = toDateKey(today)
+  const tomorrowKey = toDateKey(tomorrow)
+
+  const activeLessons = lessonsStore.items.filter((lesson) => {
+    const endDate = new Date(lesson.endAt)
+    return Number.isNaN(endDate.getTime()) || endDate >= now
+  })
+
+  const pastLessons = lessonsStore.items.filter((lesson) => {
+    const endDate = new Date(lesson.endAt)
+    return !Number.isNaN(endDate.getTime()) && endDate < now
+  })
+
+  const todayLessons = activeLessons.filter((lesson) => {
+    const startDate = new Date(lesson.startAt)
+    return !Number.isNaN(startDate.getTime()) && toDateKey(startDate) === todayKey
+  })
+
+  const tomorrowLessons = activeLessons.filter((lesson) => {
+    const startDate = new Date(lesson.startAt)
+    return !Number.isNaN(startDate.getTime()) && toDateKey(startDate) === tomorrowKey
+  })
+
+  const lessonsWithoutMaterials = activeLessons.filter((lesson) => {
+    return !lesson.materials || lesson.materials.length === 0
+  })
+
+  const lessonsWithoutLinks = activeLessons.filter((lesson) => {
+    const statusesWithLink = ["RESERVED", "PAID", "IN_PROGRESS"]
+    return statusesWithLink.includes(lesson.status) && !lesson.linkUrl
+  })
+
+  let count = 0
+
+  if (todayLessons.length) count++
+  if (tomorrowLessons.length) count++
+  if (lessonsWithoutMaterials.length) count++
+  if (lessonsWithoutLinks.length) count++
+  if (pastLessons.length) count++
+
+  return count
+})
+
 function openEditLesson(lesson: any) {
   selectedLesson.value = lesson
   isEditModalOpen.value = true
@@ -44,20 +136,6 @@ function clearFilters() {
   filters.search = ""
   filters.kind = "all"
 }
-
-const filteredLessons = computed(() => {
-  return lessonsStore.getFilteredItems(filters)
-})
-
-const lessonsByStatus = computed(() => {
-  return {
-    FREE: filteredLessons.value.filter(item => item.status === "FREE"),
-    RESERVED: filteredLessons.value.filter(item => item.status === "RESERVED"),
-    PAID: filteredLessons.value.filter(item => item.status === "PAID"),
-    IN_PROGRESS: filteredLessons.value.filter(item => item.status === "IN_PROGRESS"),
-    DONE: filteredLessons.value.filter(item => item.status === "DONE")
-  }
-})
 
 async function handleDropLesson(payload: {
   lessonId: number
@@ -100,6 +178,17 @@ await callOnce("lessons-board", async () => {
     <template #actions>
       <button class="btn-primary" type="button" @click="isCreateModalOpen = true">
         + Создать
+      </button>
+
+      <button class="btn-secondary btn-with-badge" type="button" @click="isNotificationsModalOpen = true">
+        Уведомления
+        <span v-if="notificationsCount" class="button-badge">
+          {{ notificationsCount }}
+        </span>
+      </button>
+
+      <button class="btn-secondary" type="button" @click="isScheduleModalOpen = true">
+        Расписание
       </button>
 
       <NuxtLink to="/courses" class="btn-secondary">
@@ -179,6 +268,16 @@ await callOnce("lessons-board", async () => {
     <EditLessonModal
       v-model:open="isEditModalOpen"
       :lesson="selectedLesson"
+    />
+
+    <ScheduleOverview
+      v-model:open="isScheduleModalOpen"
+      :lessons="lessonsStore.items"
+    />
+
+    <NotificationsModal
+      v-model:open="isNotificationsModalOpen"
+      :lessons="lessonsStore.items"
     />
   </div>
 </template>

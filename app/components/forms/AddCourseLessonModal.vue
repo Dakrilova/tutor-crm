@@ -133,23 +133,15 @@ async function submit() {
     v-model:open="open"
     title="Добавить урок"
     description="Добавление нового урока в текущий курс"
-    :ui="{
-      content: 'bg-transparent shadow-none ring-0 overflow-visible'
-    }"
+    :ui="{ content: 'bg-transparent shadow-none ring-0 overflow-visible' }"
   >
     <template #content>
-      <div class="panel p-6 rounded-2xl overflow-hidden">
-        <div class="flex items-center justify-between gap-4 mb-6">
-          <div>
-            <h2 class="text-2xl font-semibold mb-1">Добавить урок</h2>
-            <p class="muted text-sm">
-              Курс: {{ courseTitle || `#${courseId}` }}
-            </p>
-          </div>
-
-          <UButton variant="ghost" @click="open = false">
-            Закрыть
-          </UButton>
+      <div class="panel p-6 rounded-2xl modal-panel-scroll">
+        <div class="mb-6">
+          <h2 class="text-2xl font-semibold mb-1">Добавить урок</h2>
+          <p class="muted text-sm">
+            Курс: {{ courseTitle || `#${courseId}` }}
+          </p>
         </div>
 
         <div class="space-y-4">
@@ -219,23 +211,23 @@ async function submit() {
             >
           </div>
 
-          <label class="flex items-center gap-3 cursor-pointer">
-            <input v-model="form.isPaid" type="checkbox">
-            <span>Отмечено как оплаченное</span>
-          </label>
-
           <p v-if="errorMessage" class="text-sm text-red-400">
             {{ errorMessage }}
           </p>
 
           <div class="flex justify-end gap-3 pt-3">
-            <UButton variant="outline" @click="open = false">
+            <button class="btn-secondary" type="button" @click="open = false">
               Отмена
-            </UButton>
+            </button>
 
-            <UButton :loading="loading" @click="submit">
-              Добавить
-            </UButton>
+            <button
+              class="btn-primary"
+              type="button"
+              :disabled="loading"
+              @click="submit"
+            >
+              {{ loading ? "Добавляем..." : "Добавить" }}
+            </button>
           </div>
         </div>
       </div>
