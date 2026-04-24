@@ -47,3 +47,8 @@ export type Course = Prisma.CourseModel
  * 
  */
 export type Lesson = Prisma.LessonModel
+/**
+ * Model LessonMaterial
+ * 
+ */
+export type LessonMaterial = Prisma.LessonMaterialModel

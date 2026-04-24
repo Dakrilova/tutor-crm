@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import LessonMaterialsModal from "@/components/forms/LessonMaterialsModal.vue"
+
 const props = defineProps<{
   courseId: number
   courseTitle?: string
@@ -20,6 +22,9 @@ const form = reactive({
 
 const loading = ref(false)
 const errorMessage = ref("")
+
+const materialsModalOpen = ref(false)
+const createdLessonForMaterials = ref<any | null>(null)
 
 function resetForm() {
   form.title = ""
@@ -87,7 +92,7 @@ async function submit() {
       return
     }
 
-    await lessonsStore.createCourseLesson({
+    const createdLesson = await lessonsStore.createCourseLesson({
       courseId: props.courseId,
       title: form.title,
       startAt: buildDateTime(form.lessonDate, form.startTime),
@@ -97,8 +102,18 @@ async function submit() {
       linkUrl: form.linkUrl
     })
 
+    createdLessonForMaterials.value = {
+      ...createdLesson,
+      materials: createdLesson.materials || []
+    }
+
     emit("created")
+
     open.value = false
+
+    await nextTick()
+
+    materialsModalOpen.value = true
   } catch (error: any) {
     console.error("ADD COURSE LESSON ERROR", error)
 
@@ -226,4 +241,9 @@ async function submit() {
       </div>
     </template>
   </UModal>
+
+  <LessonMaterialsModal
+    v-model:open="materialsModalOpen"
+    :lesson="createdLessonForMaterials"
+  />
 </template>

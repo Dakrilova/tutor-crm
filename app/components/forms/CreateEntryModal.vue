@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import LessonMaterialsModal from "@/components/forms/LessonMaterialsModal.vue"
+
 const props = withDefaults(defineProps<{
   initialMode?: "single" | "course" | "course-lesson"
 }>(), {
@@ -41,6 +43,9 @@ const courseLessonForm = reactive({
 
 const loading = ref(false)
 const errorMessage = ref("")
+
+const materialsModalOpen = ref(false)
+const createdLessonForMaterials = ref<any | null>(null)
 
 function resetAll() {
   mode.value = props.initialMode
@@ -100,6 +105,19 @@ watch(open, async (value) => {
   }
 })
 
+async function openMaterialsForCreatedLesson(lesson: any) {
+  createdLessonForMaterials.value = {
+    ...lesson,
+    materials: lesson.materials || []
+  }
+
+  open.value = false
+
+  await nextTick()
+
+  materialsModalOpen.value = true
+}
+
 async function submit() {
   errorMessage.value = ""
   loading.value = true
@@ -124,7 +142,7 @@ async function submit() {
         return
       }
 
-      await lessonsStore.createSingleLesson({
+      const createdLesson = await lessonsStore.createSingleLesson({
         title: singleForm.title,
         targetName: singleForm.targetName,
         startAt: buildDateTime(singleForm.lessonDate, singleForm.startTime),
@@ -134,7 +152,7 @@ async function submit() {
         linkUrl: singleForm.linkUrl
       })
 
-      open.value = false
+      await openMaterialsForCreatedLesson(createdLesson)
       return
     }
 
@@ -180,7 +198,7 @@ async function submit() {
         return
       }
 
-      await lessonsStore.createCourseLesson({
+      const createdLesson = await lessonsStore.createCourseLesson({
         courseId: Number(courseLessonForm.courseId),
         title: courseLessonForm.title,
         startAt: buildDateTime(courseLessonForm.lessonDate, courseLessonForm.startTime),
@@ -190,7 +208,7 @@ async function submit() {
         linkUrl: courseLessonForm.linkUrl
       })
 
-      open.value = false
+      await openMaterialsForCreatedLesson(createdLesson)
     }
   } catch (error: any) {
     console.error("CREATE ENTRY ERROR", error)
@@ -214,15 +232,9 @@ async function submit() {
   >
     <template #content>
       <div class="panel p-6 rounded-2xl overflow-hidden">
-        <div class="flex items-center justify-between gap-4 mb-6">
-          <div>
-            <h2 class="text-2xl font-semibold mb-1">Создать запись</h2>
-            <p class="muted text-sm">Одиночное занятие, курс или урок курса</p>
-          </div>
-
-          <button class="btn-secondary" type="button" @click="open = false">
-            Закрыть
-          </button>
+        <div class="mb-6">
+          <h2 class="text-2xl font-semibold mb-1">Создать запись</h2>
+          <p class="muted text-sm">Одиночное занятие, курс или урок курса</p>
         </div>
 
         <div class="field-group mb-6">
@@ -300,6 +312,11 @@ async function submit() {
               placeholder="https://..."
             >
           </div>
+
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input v-model="singleForm.isPaid" type="checkbox">
+            <span>Отмечено как оплаченное</span>
+          </label>
         </div>
 
         <div v-else-if="mode === 'course'" class="space-y-4">
@@ -389,6 +406,11 @@ async function submit() {
               placeholder="https://..."
             >
           </div>
+
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input v-model="courseLessonForm.isPaid" type="checkbox">
+            <span>Отмечено как оплаченное</span>
+          </label>
         </div>
 
         <p v-if="errorMessage" class="text-sm text-red-400 mt-4">
@@ -412,4 +434,9 @@ async function submit() {
       </div>
     </template>
   </UModal>
+
+  <LessonMaterialsModal
+    v-model:open="materialsModalOpen"
+    :lesson="createdLessonForMaterials"
+  />
 </template>

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import LessonMaterialsModal from "@/components/forms/LessonMaterialsModal.vue"
+
 const props = defineProps<{
   lesson: {
     id: number
@@ -10,6 +12,14 @@ const props = defineProps<{
     isPaid: boolean
     linkUrl?: string | null
     courseId?: number | null
+    materials?: Array<{
+      id: number
+      lessonId: number
+      title: string
+      url: string
+      type: string
+      description?: string | null
+    }>
     course?: {
       id: number
       title: string
@@ -29,6 +39,8 @@ const props = defineProps<{
 const emit = defineEmits<{
   edit: [lesson: typeof props.lesson]
 }>()
+
+const materialsModalOpen = ref(false)
 
 function formatDate(value: string) {
   const date = new Date(value)
@@ -63,6 +75,10 @@ function onDragStart(event: DragEvent) {
 
 function handleClick() {
   emit("edit", props.lesson)
+}
+
+function openMaterialsModal() {
+  materialsModalOpen.value = true
 }
 </script>
 
@@ -121,5 +137,25 @@ function handleClick() {
         Ссылка
       </a>
     </div>
+
+    <button
+      type="button"
+      class="lesson-card-materials-button"
+      @click.stop="openMaterialsModal"
+    >
+      <span>Материалы урока</span>
+
+      <span
+        v-if="lesson.materials?.length"
+        class="lesson-card-materials-count"
+      >
+        {{ lesson.materials.length }}
+      </span>
+    </button>
+
+    <LessonMaterialsModal
+      v-model:open="materialsModalOpen"
+      :lesson="lesson"
+    />
   </div>
 </template>

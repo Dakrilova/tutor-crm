@@ -53,7 +53,7 @@ model Group {
   userId    Int
   createdAt DateTime @default(now())
 
-  user      User         @relation(fields: [userId], references: [id])
+  user      User          @relation(fields: [userId], references: [id])
   members   GroupMember[]
   lessons   Lesson[]
 }
@@ -105,4 +105,19 @@ model Lesson {
   student    Student?     @relation(fields: [studentId], references: [id])
   group      Group?       @relation(fields: [groupId], references: [id])
   course     Course?      @relation(fields: [courseId], references: [id])
+
+  materials  LessonMaterial[]
+}
+
+model LessonMaterial {
+  id          Int      @id @default(autoincrement())
+  lessonId    Int
+  title       String
+  url         String
+  type        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  lesson      Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
 }

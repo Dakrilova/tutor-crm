@@ -389,7 +389,8 @@ export const ModelName = {
   Group: 'Group',
   GroupMember: 'GroupMember',
   Course: 'Course',
-  Lesson: 'Lesson'
+  Lesson: 'Lesson',
+  LessonMaterial: 'LessonMaterial'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -405,7 +406,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "student" | "group" | "groupMember" | "course" | "lesson"
+    modelProps: "user" | "student" | "group" | "groupMember" | "course" | "lesson" | "lessonMaterial"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -853,6 +854,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    LessonMaterial: {
+      payload: Prisma.$LessonMaterialPayload<ExtArgs>
+      fields: Prisma.LessonMaterialFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LessonMaterialFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LessonMaterialPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LessonMaterialFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LessonMaterialPayload>
+        }
+        findFirst: {
+          args: Prisma.LessonMaterialFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LessonMaterialPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LessonMaterialFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LessonMaterialPayload>
+        }
+        findMany: {
+          args: Prisma.LessonMaterialFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LessonMaterialPayload>[]
+        }
+        create: {
+          args: Prisma.LessonMaterialCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LessonMaterialPayload>
+        }
+        createMany: {
+          args: Prisma.LessonMaterialCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.LessonMaterialCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LessonMaterialPayload>[]
+        }
+        delete: {
+          args: Prisma.LessonMaterialDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LessonMaterialPayload>
+        }
+        update: {
+          args: Prisma.LessonMaterialUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LessonMaterialPayload>
+        }
+        deleteMany: {
+          args: Prisma.LessonMaterialDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LessonMaterialUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.LessonMaterialUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LessonMaterialPayload>[]
+        }
+        upsert: {
+          args: Prisma.LessonMaterialUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LessonMaterialPayload>
+        }
+        aggregate: {
+          args: Prisma.LessonMaterialAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLessonMaterial>
+        }
+        groupBy: {
+          args: Prisma.LessonMaterialGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LessonMaterialGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LessonMaterialCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LessonMaterialCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -962,6 +1037,20 @@ export const LessonScalarFieldEnum = {
 } as const
 
 export type LessonScalarFieldEnum = (typeof LessonScalarFieldEnum)[keyof typeof LessonScalarFieldEnum]
+
+
+export const LessonMaterialScalarFieldEnum = {
+  id: 'id',
+  lessonId: 'lessonId',
+  title: 'title',
+  url: 'url',
+  type: 'type',
+  description: 'description',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LessonMaterialScalarFieldEnum = (typeof LessonMaterialScalarFieldEnum)[keyof typeof LessonMaterialScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1135,6 +1224,7 @@ export type GlobalOmitConfig = {
   groupMember?: Prisma.GroupMemberOmit
   course?: Prisma.CourseOmit
   lesson?: Prisma.LessonOmit
+  lessonMaterial?: Prisma.LessonMaterialOmit
 }
 
 /* Types for Logging */

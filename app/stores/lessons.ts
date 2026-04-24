@@ -5,6 +5,17 @@ type LessonStatus =
   | "IN_PROGRESS"
   | "DONE"
 
+type LessonMaterial = {
+  id: number
+  lessonId: number
+  title: string
+  url: string
+  type: string
+  description?: string | null
+  createdAt?: string
+  updatedAt?: string
+}
+
 type LessonItem = {
   id: number
   title: string
@@ -15,6 +26,7 @@ type LessonItem = {
   isPaid: boolean
   linkUrl?: string | null
   courseId?: number | null
+  materials?: LessonMaterial[]
   course?: {
     id: number
     title: string
@@ -91,6 +103,36 @@ export const useLessonsStore = defineStore("lessons", () => {
 
   function removeOne(id: number) {
     items.value = items.value.filter(item => item.id !== id)
+  }
+
+  function replaceLessonMaterials(lessonId: number, materials: LessonMaterial[]) {
+    const lesson = items.value.find(item => item.id === lessonId)
+
+    if (!lesson) return
+
+    lesson.materials = materials
+  }
+
+  function addMaterialToLesson(material: LessonMaterial) {
+    const lesson = items.value.find(item => item.id === material.lessonId)
+
+    if (!lesson) return
+
+    if (!lesson.materials) {
+      lesson.materials = []
+    }
+
+    lesson.materials.push(material)
+  }
+
+  function removeMaterialFromLesson(lessonId: number, materialId: number) {
+    const lesson = items.value.find(item => item.id === lessonId)
+
+    if (!lesson || !lesson.materials) return
+
+    lesson.materials = lesson.materials.filter(
+      material => material.id !== materialId
+    )
   }
 
   function getFilteredItems(filters: {
@@ -255,6 +297,51 @@ export const useLessonsStore = defineStore("lessons", () => {
     return response.deletedId
   }
 
+  async function fetchLessonMaterials(lessonId: number) {
+    const response = await $fetch<{
+      ok: boolean
+      materials: LessonMaterial[]
+    }>(`/api/lesson-materials/${lessonId}`)
+
+    replaceLessonMaterials(lessonId, response.materials)
+    return response.materials
+  }
+
+  async function createLessonMaterial(payload: {
+    lessonId: number
+    title: string
+    url: string
+    type: string
+    description?: string
+  }) {
+    const response = await $fetch<{
+      ok: boolean
+      material: LessonMaterial
+    }>("/api/lesson-materials/create", {
+      method: "POST",
+      body: payload
+    })
+
+    addMaterialToLesson(response.material)
+    return response.material
+  }
+
+  async function deleteLessonMaterial(payload: {
+    lessonId: number
+    materialId: number
+  }) {
+    const response = await $fetch<{
+      ok: boolean
+      deletedId: number
+    }>("/api/lesson-materials/delete", {
+      method: "DELETE",
+      body: payload
+    })
+
+    removeMaterialFromLesson(payload.lessonId, response.deletedId)
+    return response.deletedId
+  }
+
   return {
     items,
     loading,
@@ -268,6 +355,9 @@ export const useLessonsStore = defineStore("lessons", () => {
     createCourseLesson,
     updateLesson,
     updateLessonStatus,
-    deleteLesson
+    deleteLesson,
+    fetchLessonMaterials,
+    createLessonMaterial,
+    deleteLessonMaterial
   }
 })
