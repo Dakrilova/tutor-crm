@@ -175,7 +175,7 @@ await callOnce("lessons-board", async () => {
     title="Доска занятий"
     :subtitle="teacherSubtitle"
   >
-    <template #actions>
+    <template #primary-actions>
       <button class="btn-primary" type="button" @click="isCreateModalOpen = true">
         + Создать
       </button>
@@ -186,23 +186,12 @@ await callOnce("lessons-board", async () => {
           {{ notificationsCount }}
         </span>
       </button>
-
-      <button class="btn-secondary" type="button" @click="isScheduleModalOpen = true">
-        Расписание
-      </button>
-
-      <NuxtLink to="/courses" class="btn-secondary">
-        Курсы
-      </NuxtLink>
-
-      <NuxtLink to="/profile" class="btn-secondary">
-        Профиль
-      </NuxtLink>
-
-      <button class="btn-secondary" type="button" @click="auth.logout">
-        Выйти
-      </button>
+        <button class="btn-secondary" type="button" @click="isScheduleModalOpen = true">
+    Расписание
+  </button>
     </template>
+
+    
   </AppHeader>
 
   <div class="page-container">

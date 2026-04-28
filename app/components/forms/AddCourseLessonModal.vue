@@ -137,14 +137,25 @@ async function submit() {
   >
     <template #content>
       <div class="panel p-6 rounded-2xl modal-panel-scroll">
-        <div class="mb-6">
-          <h2 class="text-2xl font-semibold mb-1">Добавить урок</h2>
-          <p class="muted text-sm">
-            Курс: {{ courseTitle || `#${courseId}` }}
-          </p>
+        <div class="modal-title-row">
+          <div class="modal-title-copy">
+            <h2 class="text-2xl font-semibold mb-1">Добавить урок</h2>
+            <p class="muted text-sm">
+              Курс: {{ courseTitle || `#${courseId}` }}
+            </p>
+          </div>
+
+          <button
+            class="modal-close-button"
+            type="button"
+            aria-label="Закрыть"
+            @click="open = false"
+          >
+            ✕
+          </button>
         </div>
 
-        <div class="space-y-4">
+        <div class="course-lesson-modal-form">
           <div class="field-group">
             <label class="field-label">Название урока</label>
             <input
@@ -166,7 +177,7 @@ async function submit() {
             >
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="course-lesson-time-grid">
             <div class="field-group">
               <label class="field-label">Начало</label>
               <input
@@ -211,11 +222,11 @@ async function submit() {
             >
           </div>
 
-          <p v-if="errorMessage" class="text-sm text-red-400">
+          <p v-if="errorMessage" class="course-lesson-modal-error">
             {{ errorMessage }}
           </p>
 
-          <div class="flex justify-end gap-3 pt-3">
+          <div class="course-lesson-modal-actions">
             <button class="btn-secondary" type="button" @click="open = false">
               Отмена
             </button>
@@ -239,3 +250,59 @@ async function submit() {
     :lesson="createdLessonForMaterials"
   />
 </template>
+
+<style scoped>
+.modal-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.modal-title-copy {
+  min-width: 0;
+}
+
+.course-lesson-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.course-lesson-time-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.course-lesson-modal-error {
+  margin: 0;
+  color: #f87171;
+  font-size: 14px;
+}
+
+.course-lesson-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 12px;
+}
+
+@media (max-width: 768px) {
+  .course-lesson-time-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .course-lesson-modal-actions {
+    flex-direction: column-reverse;
+  }
+
+  .course-lesson-modal-actions .btn-primary,
+  .course-lesson-modal-actions .btn-secondary {
+    width: 100%;
+  }
+}
+</style>

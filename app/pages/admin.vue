@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import AppHeader from "../components/AppHeader.vue"
+
 definePageMeta({
   middleware: ["admin"]
 })
@@ -95,39 +97,21 @@ const statCards = computed(() => [
 
 <template>
   <div class="admin-page">
-    <div class="app-header-shell">
-      <div class="app-header">
-        <div class="app-header-left">
-          <p class="app-title">Админка</p>
-          <p class="app-subtitle">
-            Общая статистика системы и быстрый доступ к управлению
-          </p>
-        </div>
-
-        <div class="app-header-right">
-          <button
-            type="button"
-            class="btn-secondary"
-            :disabled="loading"
-            @click="loadStats"
-          >
-            {{ loading ? "Обновление..." : "Обновить" }}
-          </button>
-
-          <NuxtLink to="/board" class="btn-secondary">
-            К доске
-          </NuxtLink>
-
-          <button
-            type="button"
-            class="btn-danger"
-            @click="auth.logout"
-          >
-            Выйти
-          </button>
-        </div>
-      </div>
-    </div>
+    <AppHeader
+      title="Админ-панель"
+      subtitle="Общая статистика системы и быстрый доступ к управлению"
+    >
+      <template #primary-actions>
+        <button
+          type="button"
+          class="btn-primary"
+          :disabled="loading"
+          @click="loadStats"
+        >
+          {{ loading ? "Обновление..." : "Обновить" }}
+        </button>
+      </template>
+    </AppHeader>
 
     <div class="page-container">
       <div class="admin-layout">

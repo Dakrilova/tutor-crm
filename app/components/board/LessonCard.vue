@@ -129,6 +129,7 @@ function openMaterialsModal() {
       <a
         :href="lesson.linkUrl"
         target="_blank"
+        rel="noopener noreferrer"
         class="lesson-card-link"
         @click.stop
       >
@@ -157,3 +158,148 @@ function openMaterialsModal() {
     />
   </div>
 </template>
+
+<style scoped>
+.lesson-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 220px;
+  padding: 16px;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.lesson-card:hover {
+  transform: translateY(-1px);
+  border-color: rgba(0, 220, 130, 0.22);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18);
+}
+
+.lesson-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+  margin-bottom: 10px;
+}
+
+.lesson-card-title {
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.lesson-type-badge {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid rgba(0, 220, 130, 0.18);
+  border-radius: 10px;
+  background: rgba(0, 220, 130, 0.1);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.lesson-card-target {
+  min-height: 40px;
+  margin: 0 0 10px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.lesson-card-course {
+  margin: 0 0 14px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.lesson-card-time {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  margin-bottom: 16px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.lesson-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+  margin-top: auto;
+}
+
+.lesson-card-link {
+  flex-shrink: 0;
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 600;
+  transition: opacity 0.2s ease;
+}
+
+.lesson-card-link:hover {
+  opacity: 0.8;
+}
+
+.lesson-card-materials-button {
+  margin-top: 16px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid rgba(0, 220, 130, 0.45);
+  border-radius: 12px;
+  background: rgba(0, 220, 130, 0.08);
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.lesson-card-materials-button:hover {
+  background: rgba(0, 220, 130, 0.12);
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.lesson-card-materials-count {
+  min-width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 220, 130, 0.16);
+  color: var(--accent);
+  font-size: 12px;
+}
+</style>

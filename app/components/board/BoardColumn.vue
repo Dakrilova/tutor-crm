@@ -103,3 +103,112 @@ function handleEdit(lesson: any) {
     </div>
   </section>
 </template>
+
+<style scoped>
+.board-column {
+  min-height: 500px;
+  padding: 16px;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.board-column--drag-over {
+  border-color: rgba(0, 220, 130, 0.32);
+  box-shadow: 0 0 0 2px rgba(0, 220, 130, 0.12);
+  background: #12161d;
+}
+
+.board-column-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.board-column-title-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+  width: 100%;
+}
+
+.board-column-title {
+  margin: 0;
+  min-width: 0;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.board-column-count {
+  flex-shrink: 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.board-column-toggle {
+  display: none !important;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(0, 220, 130, 0.45);
+  border-radius: 10px;
+  background: rgba(0, 220, 130, 0.08);
+  color: var(--accent);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 800;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.board-column-toggle:hover {
+  background: rgba(0, 220, 130, 0.12);
+  border-color: var(--accent);
+}
+
+.board-column-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.board-column-empty {
+  padding: 14px 16px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+@media (max-width: 768px) {
+  .board-column {
+    min-height: auto;
+  }
+
+  .board-column-header {
+    margin-bottom: 0;
+  }
+
+  .board-column-toggle {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .board-column-body {
+    margin-top: 14px;
+  }
+
+  .board-column--collapsed {
+    min-height: auto;
+  }
+}
+</style>

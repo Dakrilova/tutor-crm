@@ -146,7 +146,7 @@ onMounted(() => {
     :title="course?.title || 'Курс'"
     :subtitle="teacherSubtitle"
   >
-    <template #actions>
+    <template #primary-actions>
       <button
         class="btn-primary"
         type="button"
@@ -164,11 +164,7 @@ onMounted(() => {
       </button>
 
       <NuxtLink to="/courses" class="btn-secondary">
-        К списку курсов
-      </NuxtLink>
-
-      <NuxtLink to="/board" class="btn-secondary">
-        К доске
+        К списку
       </NuxtLink>
     </template>
   </AppHeader>
@@ -199,13 +195,13 @@ onMounted(() => {
             </div>
 
             <button
-  class="btn-danger"
-  type="button"
-  :disabled="deleting"
-  @click="removeCourse"
->
-  {{ deleting ? "Удаляем..." : "Удалить курс" }}
-</button>
+              class="btn-danger"
+              type="button"
+              :disabled="deleting"
+              @click="removeCourse"
+            >
+              {{ deleting ? "Удаляем..." : "Удалить курс" }}
+            </button>
           </div>
         </div>
       </div>
@@ -235,12 +231,6 @@ onMounted(() => {
             <div class="text-safe-wrap">{{ formatDate(lesson.startAt) }}</div>
             <div class="muted text-safe-wrap">{{ formatDate(lesson.endAt) }}</div>
           </div>
-
-          <div class="lesson-card-footer">
-            <span class="lesson-card-payment text-safe-wrap">
-              {{ lesson.isPaid ? "Оплачено" : "Не оплачено" }}
-            </span>
-          </div>
         </div>
       </div>
     </template>
@@ -263,3 +253,69 @@ onMounted(() => {
     />
   </div>
 </template>
+
+
+<style scoped>
+.lesson-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 120px;
+  padding: 16px;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.lesson-card:hover {
+  transform: translateY(-1px);
+  border-color: rgba(0, 220, 130, 0.22);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18);
+}
+
+.lesson-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+  margin-bottom: 12px;
+}
+
+.lesson-card-title {
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.lesson-type-badge {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid rgba(0, 220, 130, 0.18);
+  border-radius: 10px;
+  background: rgba(0, 220, 130, 0.1);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.lesson-card-time {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  margin-top: auto;
+  font-size: 14px;
+  line-height: 1.5;
+}
+</style>

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import AppHeader from "../components/AppHeader.vue"
+
 definePageMeta({
   middleware: "auth"
 })
@@ -35,7 +37,7 @@ async function saveProfile() {
   loading.value = true
 
   try {
-    const response = await $fetch("/api/profile/update", {
+    const response: any = await $fetch("/api/profile/update", {
       method: "PATCH",
       body: {
         fullName: form.fullName,
@@ -59,31 +61,28 @@ async function saveProfile() {
     title="Профиль"
     :subtitle="teacherSubtitle"
   >
-    <template #actions>
-      <NuxtLink to="/board" class="btn-secondary">
-        К доске
-      </NuxtLink>
-
-      <NuxtLink to="/courses" class="btn-secondary">
-        Курсы
-      </NuxtLink>
-
-      <button class="btn-secondary" type="button" @click="auth.logout">
-        Выйти
-      </button>
-    </template>
+  <template #primary-actions>
+  <button
+    class="btn-primary"
+    type="button"
+    :disabled="loading"
+    @click="saveProfile"
+  >
+    {{ loading ? "Сохраняем..." : "Сохранить" }}
+  </button>
+</template>
   </AppHeader>
 
-  <div class="page-container" style="max-width: 980px;">
-    <div class="panel p-6">
-      <div class="mb-6">
-        <h1 class="text-3xl font-bold mb-2">Профиль преподавателя</h1>
-        <p class="muted">
+  <div class="page-container profile-page-container">
+    <div class="panel profile-panel">
+      <div class="profile-head">
+        <h1 class="section-title">Профиль преподавателя</h1>
+        <p class="section-subtitle">
           Управление личными данными аккаунта
         </p>
       </div>
 
-      <div class="card-ui p-5 space-y-5">
+      <div class="card-ui profile-card">
         <div class="field-group">
           <label class="field-label">ФИО</label>
           <input
@@ -114,15 +113,15 @@ async function saveProfile() {
           >
         </div>
 
-        <p v-if="errorMessage" class="text-sm text-red-400">
+        <p v-if="errorMessage" class="profile-error">
           {{ errorMessage }}
         </p>
 
-        <p v-if="successMessage" class="text-sm text-green-400">
+        <p v-if="successMessage" class="profile-success">
           {{ successMessage }}
         </p>
 
-        <div class="flex flex-wrap gap-3 pt-2">
+        <div class="profile-actions">
           <button
             class="btn-primary"
             type="button"
@@ -140,3 +139,62 @@ async function saveProfile() {
     </div>
   </div>
 </template>
+
+<style scoped>
+.profile-page-container {
+  max-width: 980px;
+}
+
+.profile-panel {
+  padding: 24px;
+}
+
+.profile-head {
+  margin-bottom: 24px;
+}
+
+.profile-card {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+}
+
+.profile-error {
+  margin: 0;
+  color: #f87171;
+  font-size: 14px;
+}
+
+.profile-success {
+  margin: 0;
+  color: #4ade80;
+  font-size: 14px;
+}
+
+.profile-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+@media (max-width: 640px) {
+  .profile-panel {
+    padding: 18px;
+  }
+
+  .profile-card {
+    padding: 16px;
+  }
+
+  .profile-actions {
+    flex-direction: column;
+  }
+
+  .profile-actions .btn-primary,
+  .profile-actions .btn-secondary {
+    width: 100%;
+  }
+}
+</style>

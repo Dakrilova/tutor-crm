@@ -174,20 +174,25 @@ const notificationsCount = computed(() => {
     :ui="{ content: 'bg-transparent shadow-none ring-0 overflow-visible' }"
   >
     <template #content>
-      <div class="panel p-6 rounded-2xl notifications-modal">
+      <div class="panel notifications-modal">
         <div class="notifications-modal-header">
           <div class="min-w-0">
-            <h2 class="text-2xl font-semibold mb-1">
+            <h2 class="notifications-modal-title">
               Уведомления
             </h2>
 
-            <p class="muted text-sm">
+            <p class="notifications-modal-subtitle">
               {{ notificationsCount ? `${notificationsCount} активных уведомлений` : "Все спокойно" }}
             </p>
           </div>
 
-          <button class="btn-secondary" type="button" @click="open = false">
-            Закрыть
+          <button
+            class="modal-close-button"
+            type="button"
+            aria-label="Закрыть"
+            @click="open = false"
+          >
+            ✕
           </button>
         </div>
 
@@ -339,3 +344,220 @@ const notificationsCount = computed(() => {
     </template>
   </UModal>
 </template>
+
+<style scoped>
+.notifications-modal {
+  width: min(700px, calc(100vw - 48px));
+  max-width: calc(100vw - 48px);
+  max-height: calc(100vh - 48px);
+  padding: 24px !important;
+  border-radius: 22px;
+  background: #0f1115;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.notifications-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.notifications-modal-title {
+  margin: 0 0 4px;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.notifications-modal-subtitle {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.notifications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.notification-card {
+  padding: 16px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 18px;
+  background: rgba(20, 24, 33, 0.96);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.14);
+}
+
+.notification-card-accent {
+  border-color: rgba(0, 220, 130, 0.3);
+  background: rgba(0, 220, 130, 0.06);
+}
+
+.notification-card-muted {
+  background: rgba(148, 163, 184, 0.06);
+}
+
+.notification-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.notification-card-head h3 {
+  margin: 0;
+  min-width: 0;
+  color: var(--text);
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.notification-card-head span {
+  flex-shrink: 0;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 220, 130, 0.12);
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.notification-description {
+  max-width: 560px;
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.notification-lessons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.notification-lessons.compact {
+  gap: 8px;
+}
+
+.notification-lesson {
+  display: grid;
+  grid-template-columns: 130px minmax(0, 1fr);
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+  padding: 10px 0;
+  border-top: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+.notification-lesson:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.notification-lesson:last-child {
+  padding-bottom: 0;
+}
+
+.notification-lesson > span {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.notification-lesson strong {
+  display: block;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.notification-lesson p {
+  margin: 3px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.notification-more {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.notification-empty {
+  padding: 20px;
+  border: 1px dashed rgba(148, 163, 184, 0.25);
+  border-radius: 18px;
+  background: rgba(15, 23, 42, 0.45);
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.modal-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+
+@media (max-width: 768px) {
+  .notifications-modal {
+    width: calc(100vw - 24px) !important;
+    max-width: calc(100vw - 24px) !important;
+    max-height: calc(100vh - 24px);
+    padding: 20px !important;
+  }
+
+  .notifications-modal-title {
+    font-size: 24px;
+  }
+
+  .notifications-modal-header {
+    align-items: flex-start;
+  }
+
+  .notification-lesson {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+}
+
+@media (max-width: 640px) {
+  .notifications-modal-header {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .notifications-modal {
+    width: calc(100vw - 16px) !important;
+    max-width: calc(100vw - 16px) !important;
+    padding: 18px !important;
+  }
+
+  .notifications-modal-title {
+    font-size: 22px;
+  }
+
+  .notification-card-head {
+    gap: 10px;
+  }
+}
+</style>

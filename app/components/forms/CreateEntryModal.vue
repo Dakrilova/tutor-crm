@@ -232,12 +232,23 @@ async function submit() {
   >
     <template #content>
       <div class="panel p-6 rounded-2xl modal-panel-scroll">
-        <div class="mb-6">
-          <h2 class="text-2xl font-semibold mb-1">Создать запись</h2>
-          <p class="muted text-sm">Одиночное занятие, курс или урок курса</p>
+        <div class="modal-title-row">
+          <div class="modal-title-copy">
+            <h2 class="text-2xl font-semibold mb-1">Создать запись</h2>
+            <p class="muted text-sm">Одиночное занятие, курс или урок курса</p>
+          </div>
+
+          <button
+            class="modal-close-button"
+            type="button"
+            aria-label="Закрыть"
+            @click="open = false"
+          >
+            ✕
+          </button>
         </div>
 
-        <div class="field-group mb-6">
+        <div class="field-group create-entry-mode-field">
           <label class="field-label">Тип записи</label>
           <select v-model="mode" class="field-select">
             <option value="single">Одиночное занятие</option>
@@ -246,7 +257,7 @@ async function submit() {
           </select>
         </div>
 
-        <div v-if="mode === 'single'" class="space-y-4">
+        <div v-if="mode === 'single'" class="create-entry-form-section">
           <div class="field-group">
             <label class="field-label">Название занятия</label>
             <input v-model="singleForm.title" type="text" class="field-input">
@@ -268,7 +279,7 @@ async function submit() {
             >
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="create-entry-time-grid">
             <div class="field-group">
               <label class="field-label">Начало</label>
               <input
@@ -314,7 +325,7 @@ async function submit() {
           </div>
         </div>
 
-        <div v-else-if="mode === 'course'" class="space-y-4">
+        <div v-else-if="mode === 'course'" class="create-entry-form-section">
           <div class="field-group">
             <label class="field-label">Название курса</label>
             <input v-model="courseForm.title" type="text" class="field-input">
@@ -326,7 +337,7 @@ async function submit() {
           </div>
         </div>
 
-        <div v-else class="space-y-4">
+        <div v-else class="create-entry-form-section">
           <div class="field-group">
             <label class="field-label">Курс</label>
             <select v-model="courseLessonForm.courseId" class="field-select">
@@ -357,7 +368,7 @@ async function submit() {
             >
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="create-entry-time-grid">
             <div class="field-group">
               <label class="field-label">Начало</label>
               <input
@@ -401,14 +412,13 @@ async function submit() {
               placeholder="https://..."
             >
           </div>
-
         </div>
 
-        <p v-if="errorMessage" class="text-sm text-red-400 mt-4">
+        <p v-if="errorMessage" class="create-entry-error">
           {{ errorMessage }}
         </p>
 
-        <div class="flex justify-end gap-3 pt-5">
+        <div class="create-entry-actions">
           <button class="btn-secondary" type="button" @click="open = false">
             Отмена
           </button>
@@ -431,3 +441,63 @@ async function submit() {
     :lesson="createdLessonForMaterials"
   />
 </template>
+
+<style scoped>
+.modal-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.modal-title-copy {
+  min-width: 0;
+}
+
+.create-entry-mode-field {
+  margin-bottom: 24px;
+}
+
+.create-entry-form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.create-entry-time-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.create-entry-error {
+  margin: 16px 0 0;
+  color: #f87171;
+  font-size: 14px;
+}
+
+.create-entry-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 20px;
+}
+
+@media (max-width: 768px) {
+  .create-entry-time-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .create-entry-actions {
+    flex-direction: column-reverse;
+  }
+
+  .create-entry-actions .btn-primary,
+  .create-entry-actions .btn-secondary {
+    width: 100%;
+  }
+}
+</style>

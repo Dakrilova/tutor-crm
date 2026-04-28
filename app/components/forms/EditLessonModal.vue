@@ -154,12 +154,23 @@ async function removeLesson() {
   >
     <template #content>
       <div class="panel p-6 rounded-2xl modal-panel-scroll">
-        <div class="mb-6">
-          <h2 class="text-2xl font-semibold mb-1">Редактировать занятие</h2>
-          <p class="muted text-sm">Изменения существующей записи</p>
+        <div class="modal-title-row">
+          <div class="modal-title-copy">
+            <h2 class="text-2xl font-semibold mb-1">Редактировать занятие</h2>
+            <p class="muted text-sm">Изменения существующей записи</p>
+          </div>
+
+          <button
+            class="modal-close-button"
+            type="button"
+            aria-label="Закрыть"
+            @click="open = false"
+          >
+            ✕
+          </button>
         </div>
 
-        <div class="space-y-4">
+        <div class="edit-lesson-modal-form">
           <div class="field-group">
             <label class="field-label">Название занятия</label>
             <input v-model="form.title" type="text" class="field-input">
@@ -175,7 +186,7 @@ async function removeLesson() {
             <input v-model="form.lessonDate" type="date" class="field-input">
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="edit-lesson-time-grid">
             <div class="field-group">
               <label class="field-label">Начало</label>
               <input
@@ -220,11 +231,11 @@ async function removeLesson() {
             >
           </div>
 
-          <p v-if="errorMessage" class="text-sm text-red-400">
+          <p v-if="errorMessage" class="edit-lesson-error">
             {{ errorMessage }}
           </p>
 
-          <div class="flex justify-between gap-3 pt-3">
+          <div class="edit-lesson-actions">
             <button
               class="btn-danger"
               type="button"
@@ -234,7 +245,7 @@ async function removeLesson() {
               {{ deleting ? "Удаляем..." : "Удалить" }}
             </button>
 
-            <div class="flex gap-3">
+            <div class="edit-lesson-actions-right">
               <button class="btn-secondary" type="button" @click="open = false">
                 Отмена
               </button>
@@ -254,3 +265,68 @@ async function removeLesson() {
     </template>
   </UModal>
 </template>
+
+<style scoped>
+.modal-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.modal-title-copy {
+  min-width: 0;
+}
+
+.edit-lesson-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.edit-lesson-time-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.edit-lesson-error {
+  margin: 0;
+  color: #f87171;
+  font-size: 14px;
+}
+
+.edit-lesson-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 12px;
+}
+
+.edit-lesson-actions-right {
+  display: flex;
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .edit-lesson-time-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .edit-lesson-actions {
+    flex-direction: column;
+  }
+
+  .edit-lesson-actions-right {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+
+  .edit-lesson-actions .btn-primary,
+  .edit-lesson-actions .btn-secondary,
+  .edit-lesson-actions .btn-danger {
+    width: 100%;
+  }
+}
+</style>

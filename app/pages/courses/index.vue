@@ -25,25 +25,13 @@ await callOnce("courses-page", async () => {
     title="Курсы"
     :subtitle="teacherSubtitle"
   >
-    <template #actions>
+    <template #primary-actions>
       <button
         class="btn-primary"
         type="button"
         @click="isCreateModalOpen = true"
       >
         + Создать курс
-      </button>
-
-      <NuxtLink to="/board" class="btn-secondary">
-        К доске
-      </NuxtLink>
-
-      <NuxtLink to="/profile" class="btn-secondary">
-        Профиль
-      </NuxtLink>
-
-      <button class="btn-secondary" type="button" @click="auth.logout">
-        Выйти
       </button>
     </template>
   </AppHeader>

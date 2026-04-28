@@ -154,28 +154,33 @@ async function removeMaterial(materialId: number) {
     :ui="{ content: 'bg-transparent shadow-none ring-0 overflow-visible' }"
   >
     <template #content>
-      <div class="panel p-6 rounded-2xl overflow-hidden lesson-materials-modal">
-        <div class="flex items-start justify-between gap-4 mb-6">
-          <div>
-            <h2 class="text-2xl font-semibold mb-1">
+      <div class="panel lesson-materials-modal">
+        <div class="lesson-materials-modal-header">
+          <div class="min-w-0">
+            <h2>
               Материалы урока
             </h2>
 
-            <p class="muted text-sm">
+            <p>
               {{ lesson?.title || "Занятие" }}
             </p>
           </div>
 
-          <button class="btn-secondary" type="button" @click="open = false">
-            Закрыть
+          <button
+            class="modal-close-button"
+            type="button"
+            aria-label="Закрыть"
+            @click="open = false"
+          >
+            ✕
           </button>
         </div>
 
-        <div v-if="materialsLoading" class="muted text-sm">
+        <div v-if="materialsLoading" class="lesson-materials-modal-loading">
           Загрузка материалов...
         </div>
 
-        <div v-else class="space-y-5">
+        <div v-else class="lesson-materials-modal-content">
           <div class="lesson-materials-modal-form">
             <div class="field-group">
               <label class="field-label">Название</label>
@@ -220,7 +225,7 @@ async function removeMaterial(materialId: number) {
             </div>
 
             <button
-              class="btn-primary w-full"
+              class="btn-primary lesson-materials-modal-submit"
               type="button"
               :disabled="materialSaving"
               @click="addMaterial"
@@ -229,24 +234,24 @@ async function removeMaterial(materialId: number) {
             </button>
           </div>
 
-          <p v-if="materialError" class="text-sm text-red-400">
+          <p v-if="materialError" class="lesson-materials-modal-error">
             {{ materialError }}
           </p>
 
           <div class="lesson-materials-modal-list">
-            <div class="flex items-center justify-between gap-3 mb-3">
-              <h3 class="text-lg font-semibold">
+            <div class="lesson-materials-modal-list-head">
+              <h3>
                 Добавленные материалы
               </h3>
 
-              <span class="muted text-sm">
+              <span>
                 {{ lessonMaterials.length }}
               </span>
             </div>
 
             <div
               v-if="lessonMaterials.length"
-              class="space-y-3"
+              class="lesson-materials-modal-items"
             >
               <div
                 v-for="material in lessonMaterials"
@@ -254,7 +259,7 @@ async function removeMaterial(materialId: number) {
                 class="lesson-materials-modal-item"
               >
                 <div class="min-w-0">
-                  <div class="flex items-center gap-2 mb-2">
+                  <div class="lesson-materials-modal-item-head">
                     <strong class="text-safe-wrap">
                       {{ material.title }}
                     </strong>
@@ -266,7 +271,7 @@ async function removeMaterial(materialId: number) {
 
                   <p
                     v-if="material.description"
-                    class="muted text-sm text-safe-wrap"
+                    class="lesson-materials-modal-description text-safe-wrap"
                   >
                     {{ material.description }}
                   </p>
@@ -315,3 +320,226 @@ async function removeMaterial(materialId: number) {
     </template>
   </UModal>
 </template>
+
+<style scoped>
+.lesson-materials-modal {
+  width: min(680px, calc(100vw - 48px));
+  max-width: calc(100vw - 48px);
+  max-height: calc(100vh - 48px);
+  padding: 24px !important;
+  border-radius: 22px;
+  background: #0f1115;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.lesson-materials-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.lesson-materials-modal-header h2 {
+  margin: 0 0 4px;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.lesson-materials-modal-header p {
+  margin: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.lesson-materials-modal-loading {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.lesson-materials-modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.lesson-materials-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.lesson-materials-modal-form .field-group {
+  gap: 0;
+}
+
+.lesson-materials-modal-textarea {
+  min-height: 90px;
+  resize: vertical;
+  display: block;
+}
+
+.lesson-materials-modal-submit {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.lesson-materials-modal-error {
+  margin: 0;
+  color: #f87171;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.lesson-materials-modal-list {
+  padding-top: 14px;
+}
+
+.lesson-materials-modal-list-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.lesson-materials-modal-list-head h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.lesson-materials-modal-list-head span {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.lesson-materials-modal-items {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.lesson-materials-modal-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  padding: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.7);
+}
+
+.lesson-materials-modal-item-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  margin-bottom: 8px;
+}
+
+.lesson-materials-modal-type {
+  width: fit-content;
+  flex-shrink: 0;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(0, 220, 130, 0.1);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.lesson-materials-modal-description {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.lesson-materials-modal-url {
+  display: block;
+  max-width: 100%;
+  margin-top: 8px;
+  color: var(--accent);
+  font-size: 13px;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.lesson-materials-modal-url:hover {
+  text-decoration: underline;
+}
+
+.lesson-materials-modal-actions {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.lesson-materials-modal-empty {
+  padding: 18px;
+  border: 1px dashed rgba(148, 163, 184, 0.25);
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.45);
+  color: #b9c7e6;
+  font-size: 14px;
+}
+
+.modal-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+} 
+
+@media (max-width: 768px) {
+  .lesson-materials-modal {
+    width: calc(100vw - 24px) !important;
+    max-width: calc(100vw - 24px) !important;
+    max-height: calc(100vh - 24px);
+    padding: 20px !important;
+  }
+
+  .lesson-materials-modal-header h2 {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 640px) {
+  .lesson-materials-modal-item {
+    grid-template-columns: 1fr;
+  }
+
+  .lesson-materials-modal-actions {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .lesson-materials-modal {
+    width: calc(100vw - 16px) !important;
+    max-width: calc(100vw - 16px) !important;
+    padding: 18px !important;
+  }
+
+  .lesson-materials-modal-header h2 {
+    font-size: 22px;
+  }
+}
+</style>
