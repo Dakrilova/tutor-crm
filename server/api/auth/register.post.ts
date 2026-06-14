@@ -12,25 +12,25 @@ export default defineEventHandler(async (event) => {
   if (!fullName || !email || !password) {
     throw createError({
       statusCode: 400,
-      statusMessage: "Заполните все поля"
+      statusMessage: "Заполните все поля",
     });
   }
 
   if (password.length < 6) {
     throw createError({
       statusCode: 400,
-      statusMessage: "Пароль должен быть не короче 6 символов"
+      statusMessage: "Пароль должен быть не короче 6 символов",
     });
   }
 
   const existingUser = await prisma.user.findUnique({
-    where: { email }
+    where: { email },
   });
 
   if (existingUser) {
     throw createError({
       statusCode: 409,
-      statusMessage: "Пользователь с таким email уже существует"
+      statusMessage: "Пользователь с таким email уже существует",
     });
   }
 
@@ -40,8 +40,8 @@ export default defineEventHandler(async (event) => {
     data: {
       fullName,
       email,
-      passwordHash
-    }
+      passwordHash,
+    },
   });
 
   setUserSession(event, user.id);
@@ -51,7 +51,7 @@ export default defineEventHandler(async (event) => {
     user: {
       id: user.id,
       fullName: user.fullName,
-      email: user.email
-    }
+      email: user.email,
+    },
   };
 });

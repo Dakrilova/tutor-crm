@@ -435,6 +435,7 @@ export type GroupMemberCreateOrConnectWithoutStudentInput = {
 
 export type GroupMemberCreateManyStudentInputEnvelope = {
   data: Prisma.GroupMemberCreateManyStudentInput | Prisma.GroupMemberCreateManyStudentInput[]
+  skipDuplicates?: boolean
 }
 
 export type GroupMemberUpsertWithWhereUniqueWithoutStudentInput = {
@@ -478,6 +479,7 @@ export type GroupMemberCreateOrConnectWithoutGroupInput = {
 
 export type GroupMemberCreateManyGroupInputEnvelope = {
   data: Prisma.GroupMemberCreateManyGroupInput | Prisma.GroupMemberCreateManyGroupInput[]
+  skipDuplicates?: boolean
 }
 
 export type GroupMemberUpsertWithWhereUniqueWithoutGroupInput = {
@@ -1247,6 +1249,7 @@ export type GroupMemberCreateManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * The data used to create many GroupMembers.
    */
   data: Prisma.GroupMemberCreateManyInput | Prisma.GroupMemberCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1265,6 +1268,7 @@ export type GroupMemberCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Ext
    * The data used to create many GroupMembers.
    */
   data: Prisma.GroupMemberCreateManyInput | Prisma.GroupMemberCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */
